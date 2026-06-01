@@ -1,0 +1,125 @@
+# ============================================================
+#   GANESH R — NexusGrid Labs
+#   GitHub Metrics Auto-Update Workflow
+#   Generates and refreshes profile metrics images
+# ============================================================
+
+name: 📊 Update GitHub Metrics
+
+on:
+  # Run every 12 hours
+  schedule:
+    - cron: "0 */12 * * *"
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+  # Run on push to main
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  github-metrics:
+    name: 📊 Generate GitHub Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+
+    steps:
+      # ─── CORE METRICS ──────────────────────────────────────
+      - name: 📈 Generate Core GitHub Metrics
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GaneshRamesh2004
+          template: classic
+          base: header, activity, community, repositories, metadata
+          base_indepth: yes
+          config_timezone: Asia/Kolkata
+          config_order: base.header, base.activity, base.repositories
+          config_display: large
+          filename: metrics/metrics.base.svg
+          output_action: commit
+
+      # ─── LANGUAGE METRICS ─────────────────────────────────
+      - name: 🗣️ Generate Language Metrics
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GaneshRamesh2004
+          template: classic
+          base: ""
+          plugin_languages: yes
+          plugin_languages_indepth: yes
+          plugin_languages_details: bytes-size, percentage
+          plugin_languages_sections: most-used
+          plugin_languages_limit: 10
+          config_timezone: Asia/Kolkata
+          filename: metrics/metrics.languages.svg
+          output_action: commit
+
+      # ─── ACTIVITY METRICS ─────────────────────────────────
+      - name: 🔥 Generate Activity Metrics
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GaneshRamesh2004
+          template: classic
+          base: ""
+          plugin_activity: yes
+          plugin_activity_limit: 14
+          plugin_activity_days: 14
+          plugin_activity_filter: push, release, issue, pr, review, comment
+          config_timezone: Asia/Kolkata
+          filename: metrics/metrics.activity.svg
+          output_action: commit
+
+      # ─── ACHIEVEMENTS METRICS ─────────────────────────────
+      - name: 🏆 Generate Achievements
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GaneshRamesh2004
+          template: classic
+          base: ""
+          plugin_achievements: yes
+          plugin_achievements_display: compact
+          plugin_achievements_secrets: yes
+          config_timezone: Asia/Kolkata
+          filename: metrics/metrics.achievements.svg
+          output_action: commit
+
+      # ─── ISOCALENDAR METRICS ──────────────────────────────
+      - name: 📅 Generate Isometric Calendar
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GaneshRamesh2004
+          template: classic
+          base: ""
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
+          config_timezone: Asia/Kolkata
+          filename: metrics/metrics.isocalendar.svg
+          output_action: commit
+
+      # ─── HABITS METRICS ───────────────────────────────────
+      - name: ⏰ Generate Coding Habits
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: GaneshRamesh2004
+          template: classic
+          base: ""
+          plugin_habits: yes
+          plugin_habits_from: 200
+          plugin_habits_days: 14
+          plugin_habits_charts: yes
+          plugin_habits_trim: yes
+          config_timezone: Asia/Kolkata
+          filename: metrics/metrics.habits.svg
+          output_action: commit

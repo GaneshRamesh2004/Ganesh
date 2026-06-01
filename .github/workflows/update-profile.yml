@@ -1,0 +1,51 @@
+# ============================================================
+#   GANESH R — NexusGrid Labs
+#   Profile Auto-Update Workflow
+#   Keeps README stats and badges fresh
+# ============================================================
+
+name: ⚡ Auto Update Profile
+
+on:
+  schedule:
+    # Every 6 hours
+    - cron: "0 */6 * * *"
+
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  update-readme:
+    name: ⚡ Refresh Profile Data
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🕒 Update Last Active Timestamp
+        run: |
+          echo "Profile last auto-updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" > .last-updated
+          echo "Timezone: IST (UTC+5:30) — Chennai, India" >> .last-updated
+          echo "Owner: Ganesh R — NexusGrid Labs" >> .last-updated
+
+      - name: 💾 Commit Timestamp Update
+        run: |
+          git config --global user.email "ganeshr2004231@gmail.com"
+          git config --global user.name "GaneshRamesh2004"
+          git add .last-updated
+          git diff --staged --quiet || git commit -m "⚡ auto: profile heartbeat [$(date -u '+%Y-%m-%d')]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
